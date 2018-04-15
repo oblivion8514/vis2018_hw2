@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>hw1</title>
+        <script src="https://d3js.org/d3.v3.min.js"></script>
+        <script src="d3.js"></script>
+        <script src="d3.min.js"></script>
+    </head>
+    <body>
+        <p> NBA team salaries vs win rate
+        </p>
+        <select id="menu">
+            <option value="0">years</option>
+            <option value="1">2016</option>
+            <option value="2">2017</option>
+            <option value="3">2018</option>
+        </select>
+        <br>
+        <script>
+            var sc16=70;
+            var sc17=94;
+            var sc18=99;
+            var Data18=[ //x means salaries(millions),y means win %
+                {'x':100,'y':0.293},//ATL
+                {'x':115,'y':0.671},//BOS
+                {'x':96,'y':0.341},//BKN
+                {'x':117,'y':0.439},//CHA
+                {'x':89,'y':0.329},//CHI
+                {'x':137,'y':0.610},//CLE
+                {'x':86,'y':0.293},//DAL
+                {'x':107,'y':0.561},//DEN
+                {'x':120,'y':0.476},//DET
+                {'x':137,'y':0.707},//GSW
+                {'x':119,'y':0.793},//HOU
+                {'x':94,'y':0.585},//IND
+                {'x':119,'y':0.512},//LAC
+                {'x':105,'y':0.427},//LAL
+                {'x':110,'y':0.268},//MEM
+                {'x':131,'y':0.537},//MIA
+                {'x':121,'y':0.537},//MIL
+                {'x':117,'y':0.573},//MIN
+                {'x':120,'y':0.585},//NO
+                {'x':108,'y':0.354},//NY
+                {'x':134,'y':0.585},//OKC
+                {'x':98,'y':0.305},//ORL
+                {'x':101,'y':0.634},//PHI
+                {'x':95,'y':0.256},//SUN
+                {'x':119,'y':0.598},//POR
+                {'x':96,'y':0.329},//SAC
+                {'x':116,'y':0.573},//SAN
+                {'x':117,'y':0.720},//TOR
+                {'x':108,'y':0.585},//UTA
+                {'x':124,'y':0.524},//WAS
+            ];
+            var Data17=[ //x means salaries(millions),y means win %
+                {'x':95,'y':0.524},//ATL
+                {'x':93,'y':0.646},//BOS
+                {'x':84,'y':0.244},//BKN
+                {'x':90,'y':0.439},//CHA
+                {'x':93,'y':0.500},//CHI
+                {'x':127,'y':0.622},//CLE
+                {'x':104,'y':0.402},//DAL
+                {'x':83,'y':0.488},//DEN
+                {'x':109,'y':0.451},//DET
+                {'x':102,'y':0.817},//GSW
+                {'x':90,'y':0.671},//HOU
+                {'x':94,'y':0.512},//IND
+                {'x':116,'y':0.622},//LAC
+                {'x':95,'y':0.317},//LAL
+                {'x':111,'y':0.524},//MEM
+                {'x':102,'y':0.500},//MIA
+                {'x':107,'y':0.512},//MIL
+                {'x':82,'y':0.378},//MIN
+                {'x':102,'y':0.415},//NO
+                {'x':104,'y':0.378},//NY
+                {'x':91,'y':0.573},//OKC
+                {'x':104,'y':0.354},//ORL
+                {'x':85,'y':0.341},//PHI
+                {'x':85,'y':0.293},//SUN
+                {'x':112,'y':0.500},//POR
+                {'x':96,'y':0.390},//SAC
+                {'x':109,'y':0.744},//SAN
+                {'x':109,'y':0.622},//TOR
+                {'x':81,'y':0.622},//UTA
+                {'x':102,'y':0.598},//WAS
+            ];
+            var Data16=[ //x means salaries(millions),y means win %
+                {'x':71,'y':0.585},//ATL
+                {'x':77,'y':0.585},//BOS
+                {'x':83,'y':0.256},//BKN
+                {'x':78,'y':0.585},//CHA
+                {'x':89,'y':0.512},//CHI
+                {'x':106,'y':0.695},//CLE
+                {'x':74,'y':0.512},//DAL
+                {'x':73,'y':0.402},//DEN
+                {'x':77,'y':0.537},//DET
+                {'x':94,'y':0.890},//GSW
+                {'x':90,'y':0.500},//HOU
+                {'x':71,'y':0.549},//IND
+                {'x':96,'y':0.646},//LAC
+                {'x':72,'y':0.207},//LAL
+                {'x':83,'y':0.512},//MEM
+                {'x':86,'y':0.585},//MIA
+                {'x':71,'y':0.402},//MIL
+                {'x':72,'y':0.354},//MIN
+                {'x':84,'y':0.366},//NO
+                {'x':75,'y':0.390},//NY
+                {'x':95,'y':0.671},//OKC
+                {'x':63,'y':0.427},//ORL
+                {'x':63,'y':0.122},//PHI
+                {'x':70,'y':0.280},//SUN
+                {'x':61,'y':0.537},//POR
+                {'x':72,'y':0.402},//SAC
+                {'x':87,'y':0.817},//SAN
+                {'x':71,'y':0.683},//TOR
+                {'x':65,'y':0.488},//UTA
+                {'x':84,'y':0.500},//WAS
+            ];
+            d3.select('#menu').on('change',function(){
+                if(this.value==1){
+                    draw(Data16,sc16);
+                }
+                if(this.value==2){
+                    draw(Data17,sc17);
+                }
+                if(this.value==3){
+                    draw(Data18,sc18);
+                }
+            });
+            function draw(data,sc){
+                d3.selectAll('svg').remove();
+                var s = d3.select('body').append('svg');
+                var width = 1200,
+                    height = 675;
+                s.attr({
+                    'width': '1600',
+                    'height': '900'
+                  }).style({
+                    'border': '1px dotted #aaa'
+                  });
+                var scaleX = d3.scale.linear()
+                    .range([0, width])
+                    .domain([50, 150]);
+                var scaleY = d3.scale.linear()
+                    .range([height, 0])
+                    .domain([0, 100]); 
+                var line = d3.svg.line()
+                    .x(function(d) {
+                      return scaleX(d.x);
+                    }).y(function(d) {
+                      return scaleY(d.y);
+                    });
+                var axisX = d3.svg.axis()
+                    .scale(scaleX)
+                    .orient("bottom")
+                    .ticks(10);
+
+                var axisY = d3.svg.axis()
+                    .scale(scaleY)
+                    .orient("left")
+                    .ticks(10)
+                    .tickFormat(function(d){return d+'%';});
+
+                s.append('g')
+                   .call(axisX)
+                   .attr({
+                    'fill':'none',
+                    'stroke':'#000',
+                    'transform':'translate(200,'+(height+20)+')' 
+                   }).selectAll('text')
+                   .attr({
+                    'fill':'#000',
+                    'stroke':'none',
+                   }).style({
+                    'font-size':'20px'
+                   });
+
+                s.append('g')
+                   .call(axisY)
+                   .attr({
+                    'fill':'none',
+                    'stroke':'#000',
+                    'transform':'translate(200,20)'
+                   }).selectAll('text')
+                   .attr({
+                    'fill':'#000',
+                    'stroke':'none',
+                   }).style({
+                    'font-size':'20px'
+                   });
+                for(var i=0;i<30;i++){
+                    var target="team_logo/"+i+".png";
+                    s.append('svg:image')
+                        .attr({
+                          'xlink:href': target,
+                          x: scaleX(data[i].x)+200,
+                          y: scaleY(data[i].y*100),
+                          width: 50,
+                          height: 50
+                        });
+                }
+                s.append('text')
+                    .attr({
+                    'x':600,
+                    'y':height+100
+                    }).style('font-size','20px')
+                    .text("team salaries (millions)");
+                s.append('text')
+                    .attr({
+                    'x':5,
+                    'y':height-312,
+                    'glyph-orientation-vertical':0
+                    }).style('font-size' ,'20px')
+                    .text("team win %"); 
+                
+                var lData=[{'x':sc,'y':0},
+                          {'x':sc,'y':100}];
+                var line = d3.svg.line()
+                    .x(function(d) {
+                      return scaleX(d.x)+200;
+                    }).y(function(d) {
+                      return scaleY(d.y)+20;
+                    });
+                
+                s.append('path')
+                    .attr({
+                        'd':line(lData),
+                        'stroke':'#09c',
+                        'fill':'none'
+                    });
+                s.append('text')
+                    .attr({
+                    'x':scaleX(sc)+150,
+                    'y':20,
+                    'stroke':'#09c'
+                    }).style('font-size','20px')
+                    .text("salary cap");
+            }
+            
+        </script>
+    </body>
+</html>  
